@@ -33,6 +33,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [authError, setAuthError] = useState('');
   const [showPasscode, setShowPasscode] = useState(false);
 
+  // Security Hardening State
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [lockoutTime, setLockoutTime] = useState<number | null>(null);
+  const [secondsRemaining, setSecondsRemaining] = useState(0);
+
   // Active Admin View Tab
   const [activeTab, setActiveTab] = useState<'works' | 'settings' | 'inquiries' | 'backup'>('works');
 
@@ -61,29 +66,120 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [importedJson, setImportedJson] = useState('');
   const [importStatus, setImportStatus] = useState({ success: false, message: '' });
 
+  // Handle lockout countdown timer
+  useEffect(() => {
+    if (!lockoutTime) return;
+    
+    const interval = setInterval(() => {
+      const remaining = Math.ceil((lockoutTime - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setLockoutTime(null);
+        setSecondsRemaining(0);
+        setAuthError('');
+      } else {
+        setSecondsRemaining(remaining);
+      }
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [lockoutTime]);
+
+  // Inactivity auto-lock mechanism (10 minutes)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    
+    let timeoutId: any = null;
+    
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsAuthenticated(false);
+        setPasscode('');
+        alert('Security Alert: Session automatically locked due to 10 minutes of inactivity.');
+      }, 10 * 60 * 1000); // 10 minutes
+    };
+    
+    // Set up activity listeners
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('keypress', resetTimer);
+    window.addEventListener('scroll', resetTimer);
+    window.addEventListener('click', resetTimer);
+    
+    resetTimer(); // Initialize timer
+    
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('keypress', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+      window.removeEventListener('click', resetTimer);
+    };
+  }, [isAuthenticated]);
+
   // Handle Passcode verification
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPasscodeHash = siteSettings.adminPasscode || '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
-    const inputHash = sha256(passcode.trim());
-    const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
     
-    if (inputHash === correctPasscodeHash || inputHash === defaultPasscodeHash) {
+    // Lockout verification check
+    if (lockoutTime && Date.now() < lockoutTime) {
+      const remainingSecs = Math.ceil((lockoutTime - Date.now()) / 1000);
+      setAuthError(`Too many failed attempts. Console locked. Try again in ${remainingSecs}s.`);
+      return;
+    }
+
+    const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
+    const correctPasscodeHash = siteSettings.adminPasscode || defaultPasscodeHash;
+    const inputHash = sha256(passcode.trim());
+    
+    // CRITICAL BUG FIX: Only allow inputHash === correctPasscodeHash.
+    // If the passcode has been changed, correctPasscodeHash is the new hash, and defaultPasscodeHash (1111) is no longer allowed!
+    if (inputHash === correctPasscodeHash) {
       setIsAuthenticated(true);
       setAuthError('');
-      
-      // Self-heal: If local storage settings have an outdated passcode hash, automatically upgrade it to 1111 hash
-      if (siteSettings.adminPasscode !== inputHash && inputHash === defaultPasscodeHash) {
-        onUpdateSettings({ ...siteSettings, adminPasscode: defaultPasscodeHash });
-      }
+      setFailedAttempts(0);
     } else {
-      setAuthError('Incorrect passcode. Access denied.');
+      const nextFailedCount = failedAttempts + 1;
+      setFailedAttempts(nextFailedCount);
+      if (nextFailedCount >= 5) {
+        const lockUntil = Date.now() + 30000; // 30 seconds lockout
+        setLockoutTime(lockUntil);
+        setAuthError('Too many failed attempts. Console locked for 30 seconds.');
+      } else {
+        setAuthError(`Incorrect passcode. Access denied. (${5 - nextFailedCount} attempts remaining)`);
+      }
     }
   };
 
   // Site Settings Form save
   const [settingsForm, setSettingsForm] = useState<SiteSettings>({ ...siteSettings });
   const [newPasscodeInput, setNewPasscodeInput] = useState('');
+  const [currentPasscodeConfirm, setCurrentPasscodeConfirm] = useState('');
+  const [passcodeError, setPasscodeError] = useState('');
+
+  // Password strength check utility
+  const checkPasscodeStrength = (pass: string) => {
+    if (!pass) return { score: 0, label: '', color: '' };
+    if (pass.length < 4) {
+      return { score: 1, label: 'Too Short (Min 4 chars)', color: 'text-red-500' };
+    }
+    
+    // Check for trivial repetitiveness or sequence
+    const isRepeated = /^(\w)\1+$/.test(pass);
+    const sequences = ['1234', '2345', '3456', '4567', '5678', '6789', '0123', 'abcd', 'qwer'];
+    const isSequential = sequences.some(seq => seq.includes(pass.toLowerCase()) || pass.toLowerCase().includes(seq));
+    
+    if (isRepeated || isSequential) {
+      return { score: 2, label: 'Insecure (Too simple/sequential)', color: 'text-orange-500 font-bold' };
+    }
+    
+    if (pass.length < 6) {
+      return { score: 3, label: 'Medium security', color: 'text-yellow-500' };
+    }
+    
+    return { score: 4, label: 'Strong security', color: 'text-green-500' };
+  };
+
+  const passcodeStrength = checkPasscodeStrength(newPasscodeInput);
 
   useEffect(() => {
     setSettingsForm({ ...siteSettings });
@@ -91,12 +187,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const handleSettingsSave = (e: React.FormEvent) => {
     e.preventDefault();
+    setPasscodeError('');
     const finalSettings = { ...settingsForm };
+    
     if (newPasscodeInput.trim() !== '') {
-      finalSettings.adminPasscode = sha256(newPasscodeInput.trim());
+      const pass = newPasscodeInput.trim();
+      
+      // 1. Current Passcode authorization check
+      const currentHash = sha256(currentPasscodeConfirm.trim());
+      const savedHash = siteSettings.adminPasscode || '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
+      
+      if (currentHash !== savedHash) {
+        setPasscodeError('Current passcode verification failed. Please enter your correct current passcode to authorize changes.');
+        return;
+      }
+      
+      // 2. Strength Validation Block
+      const strength = checkPasscodeStrength(pass);
+      if (strength.score <= 2) {
+        setPasscodeError(`Cannot set insecure passcode: ${strength.label}. Please choose a secure sequence.`);
+        return;
+      }
+      
+      finalSettings.adminPasscode = sha256(pass);
       setSettingsForm(prev => ({ ...prev, adminPasscode: finalSettings.adminPasscode }));
       setNewPasscodeInput('');
+      setCurrentPasscodeConfirm('');
     }
+    
     onUpdateSettings(finalSettings);
     alert('Site-wide settings updated successfully!');
   };
@@ -866,18 +984,59 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
                   
-                  <div className="space-y-2 pt-4 border-t border-white/5 sm:pt-0 sm:border-0">
+                  <div className="space-y-4 pt-4 border-t border-white/5 sm:pt-0 sm:border-0">
                     <div className="space-y-1.5">
                       <label className="block text-[10px] font-mono text-neutral-400 uppercase tracking-widest">Update Admin Passcode</label>
                       <input
-                        type="text"
+                        type="password"
                         value={newPasscodeInput}
                         onChange={(e) => setNewPasscodeInput(e.target.value)}
                         placeholder="Type new passcode to update, or leave empty..."
                         className="w-full px-4 py-2 rounded bg-neutral-900 border border-white/5 focus:border-accent-purple text-white text-xs focus:outline-none font-mono"
                       />
-                      <p className="text-[9px] font-mono text-neutral-500">Current passcode is stored securely as a cryptographic SHA-256 hash.</p>
+                      
+                      {newPasscodeInput.trim() !== '' && (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px]">
+                            <span className="font-mono text-neutral-400">Complexity Strength:</span>
+                            <span className={`font-mono ${passcodeStrength.color}`}>{passcodeStrength.label}</span>
+                          </div>
+                          <div className="h-1 w-full bg-neutral-950 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full transition-all duration-300 ${
+                                passcodeStrength.score === 1 ? 'w-1/4 bg-red-500' :
+                                passcodeStrength.score === 2 ? 'w-2/4 bg-orange-500' :
+                                passcodeStrength.score === 3 ? 'w-3/4 bg-yellow-500' :
+                                passcodeStrength.score === 4 ? 'w-full bg-green-500' : 'w-0'
+                              }`} 
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
+
+                    {newPasscodeInput.trim() !== '' && (
+                      <div className="space-y-1.5 border-t border-white/5 pt-3">
+                        <label className="block text-[10px] font-mono text-red-400 uppercase tracking-widest">Confirm Current Passcode</label>
+                        <input
+                          type="password"
+                          required
+                          value={currentPasscodeConfirm}
+                          onChange={(e) => setCurrentPasscodeConfirm(e.target.value)}
+                          placeholder="Verify current passcode to authorize..."
+                          className="w-full px-4 py-2 rounded bg-neutral-900 border border-red-500/20 focus:border-red-500 text-white text-xs focus:outline-none font-mono"
+                        />
+                        <p className="text-[9px] font-mono text-neutral-500">Required to authorize and commit credential changes.</p>
+                      </div>
+                    )}
+
+                    {passcodeError && (
+                      <p className="text-[10px] font-mono text-red-500 bg-red-500/10 border border-red-500/20 px-3 py-2 rounded">
+                        {passcodeError}
+                      </p>
+                    )}
+
+                    <p className="text-[9px] font-mono text-neutral-500">Current passcode is stored securely as a cryptographic SHA-256 hash.</p>
                   </div>
                 </div>
               </div>
