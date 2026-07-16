@@ -1,0 +1,6 @@
+{
+  "name": "Videographer Moon",
+  "description": "A minimalist, luxurious, and cinematic portfolio for Videographer Moon, featuring a filterable gallery of works, an interactive client inquiry system, and a secure admin dashboard for complete content customization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
