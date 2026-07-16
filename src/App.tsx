@@ -114,7 +114,8 @@ export default function App() {
           updated = true;
         }
         const oldPasscodeHash = '981cf69707e4bc8310c3f596b9968434863c1a3ebfa9eb2b3ef7bf3c9a62a98f'; // SHA-256 of 'moon123'
-        const defaultPasscodeHash = '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332'; // SHA-256 of '1111'
+        const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c'; // SHA-256 of '1111'
+        const wrongDefaultHash = '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332'; // Incorrect hash previously set
         
         if (!parsed.adminPasscode) {
           parsed.adminPasscode = defaultPasscodeHash;
@@ -127,8 +128,8 @@ export default function App() {
             parsed.adminPasscode = hashedInput;
           }
           updated = true;
-        } else if (parsed.adminPasscode === '981cf69707e4bc8310c3f596b9968434863c1a3ebfa9eb2b3ef7bf3c9a62a98f') {
-          // If the stored value is already the old hash, upgrade it to the new default '1111' hash
+        } else if (parsed.adminPasscode === oldPasscodeHash || parsed.adminPasscode === wrongDefaultHash) {
+          // If the stored value is already the old hash or incorrect default hash, upgrade it to the new default '1111' hash
           parsed.adminPasscode = defaultPasscodeHash;
           updated = true;
         }

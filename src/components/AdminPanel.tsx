@@ -64,9 +64,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Handle Passcode verification
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPasscodeHash = siteSettings.adminPasscode || '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332';
+    const correctPasscodeHash = siteSettings.adminPasscode || '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
     const inputHash = sha256(passcode.trim());
-    const defaultPasscodeHash = '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332';
+    const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
     
     if (inputHash === correctPasscodeHash || inputHash === defaultPasscodeHash) {
       setIsAuthenticated(true);

@@ -87,7 +87,7 @@ export const INITIAL_SITE_SETTINGS: SiteSettings = {
   accentColor: '#8A2BE2', // Electric Purple
   heroVideoUrl: '',
   seoKeywords: 'videographer moon, cinema portfolio, fashion videographer, commercial film director, k-videography, luxury brand filmmaker',
-  adminPasscode: '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332' // SHA-256 hash of '1111'
+  adminPasscode: '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c' // SHA-256 hash of '1111'
 };
 
 export const INITIAL_CONTACT_INQUIRIES: ContactInquiry[] = [
