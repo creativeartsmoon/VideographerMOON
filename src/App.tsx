@@ -52,23 +52,17 @@ export default function App() {
           let updated = false;
           const migrated = parsed.map(item => {
             let category = item.category;
-            if (category === 'Music Video') {
-              category = 'Brand Story (For Brands & Artists)';
+            if (category.includes('Brand') || category.includes('Startup') || category === 'Music Video' || category === 'Fashion' || category === 'Commercial') {
+              category = 'Brand & Promotional';
               updated = true;
-            } else if (category === 'Narrative') {
-              category = 'Interview & Documentary';
+            } else if (category.includes('Culture') || category.includes('Festival')) {
+              category = 'Cultural Projects';
               updated = true;
-            } else if (category === 'Fashion') {
-              category = 'Brand Story (For Brands & Artists)';
+            } else if (category.includes('Interview') || category.includes('Documentary') || category === 'Narrative') {
+              category = 'Documentary & Interviews';
               updated = true;
-            } else if (category === 'Commercial') {
-              category = 'Startup Content (Product & Promo)';
-              updated = true;
-            } else if (category === 'Travel') {
-              category = 'Culture Project (Performance & Festival)';
-              updated = true;
-            } else if (category === 'Culture Film (Event & Space)') {
-              category = 'Culture Project (Performance & Festival)';
+            } else if (category === 'Travel' || category === 'Event' || category === 'Events') {
+              category = 'Events';
               updated = true;
             }
             return { ...item, category };
@@ -276,45 +270,45 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                {/* Card 1: Brand Story */}
+                {/* Card 1: Brand & Promotional */}
                 <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
                   <div className="space-y-4">
                     <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
-                      <BookOpen className="w-5 h-5" />
+                      <Award className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Brand Story</h3>
-                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Premium Narrative Campaign</p>
+                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Brand &amp; Promotional</h3>
+                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Brand Identity &amp; Promotion</p>
                     </div>
                     <div className="border-t border-white/5 pt-4">
                       <p className="text-neutral-400 text-sm font-light leading-relaxed">
-                        Films capturing the brand's core philosophy, vision, and deep human connections.
+                        Helping brands communicate their identity through promotional content, product launches, and visual storytelling.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Card 2: Startup Content */}
+                {/* Card 2: Events */}
                 <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
                   <div className="space-y-4">
                     <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
-                      <Rocket className="w-5 h-5" />
+                      <Calendar className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Startup Content</h3>
-                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Promotional & Core Media</p>
+                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Events</h3>
+                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Live Experiences &amp; Highlights</p>
                     </div>
                     <div className="border-t border-white/5 pt-4">
                       <p className="text-neutral-400 text-sm font-light leading-relaxed">
-                        Content introducing startup products, digital services, and dynamic team culture.
+                        Capturing conferences, launches, performances, and memorable moments as they unfold.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Card 3: Culture Project */}
+                {/* Card 3: Cultural Projects */}
                 <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
                   <div className="space-y-4">
@@ -322,18 +316,18 @@ export default function App() {
                       <Compass className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Culture Project</h3>
-                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Performance & Festival</p>
+                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Cultural Projects</h3>
+                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">Arts, Communities &amp; Culture</p>
                     </div>
                     <div className="border-t border-white/5 pt-4">
                       <p className="text-neutral-400 text-sm font-light leading-relaxed">
-                        Videos documenting high-energy live performances, cultural festivals, exhibitions, and creative brand events.
+                        Collaborating with artists and cultural organizations to document creative work and shared experiences.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Card 4: Interview & Documentary */}
+                {/* Card 4: Documentary & Interviews */}
                 <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
                   <div className="space-y-4">
@@ -341,12 +335,12 @@ export default function App() {
                       <Mic className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Interview & Documentary</h3>
-                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">In-Depth Dialogue Profile</p>
+                      <h3 className="font-display font-bold text-xl uppercase tracking-wider text-white">Documentary &amp; Interviews</h3>
+                      <p className="text-xs font-mono text-accent-purple/80 tracking-widest uppercase">People, Stories &amp; Perspectives</p>
                     </div>
                     <div className="border-t border-white/5 pt-4">
                       <p className="text-neutral-400 text-sm font-light leading-relaxed">
-                        Interview-style documentary capturing the raw stories of founders, creators, and team members.
+                        Creating interview-led content that reveals authentic voices, ideas, and meaningful stories.
                       </p>
                     </div>
                   </div>
@@ -460,7 +454,7 @@ export default function App() {
                   className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-neutral-400 hover:text-white hover:gap-2.5 transition-all focus:outline-none"
                   id="view-all-reels-btn"
                 >
-                  View Full Portfolio <ChevronRight className="w-4 h-4 text-accent-purple" />
+                  View more <ChevronRight className="w-4 h-4 text-accent-purple" />
                 </button>
               </div>
 

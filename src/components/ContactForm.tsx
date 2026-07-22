@@ -16,27 +16,18 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    projectType: 'Brand Story (For Brands & Artists)',
-    budget: '€1,000 - €2,500',
+    projectType: 'Brand & Promotional',
     message: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const budgetOptions = [
-    'Under €500',
-    '€500 - €1,000',
-    '€1,000 - €2,500',
-    '€2,500 - €5,000',
-    '€5,000+',
-  ];
-
   const projectTypes = [
-    'Brand Story (For Brands & Artists)',
-    'Startup Content (Product & Promo)',
-    'Culture Project (Performance & Festival)',
-    'Interview & Documentary',
+    'Brand & Promotional',
+    'Events',
+    'Cultural Projects',
+    'Documentary & Interviews',
     'Other Creative Project',
   ];
 
@@ -64,7 +55,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
         name: formData.name,
         email: formData.email,
         projectType: formData.projectType,
-        budget: formData.budget,
         message: formData.message,
       }),
     })
@@ -74,15 +64,13 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
           name: formData.name,
           email: formData.email,
           projectType: formData.projectType,
-          budget: formData.budget,
           message: formData.message,
         });
         setIsSuccess(true);
         setFormData({
           name: '',
           email: '',
-          projectType: 'Brand Story (For Brands & Artists)',
-          budget: '€1,000 - €2,500',
+          projectType: 'Brand & Promotional',
           message: '',
         });
       } else {
@@ -137,8 +125,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
             </div>
           )}
 
-
-
         </div>
       </div>
 
@@ -155,7 +141,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
             <div className="space-y-2">
               <h4 className="font-display font-bold text-lg text-white uppercase tracking-wider">Transmission Received</h4>
               <p className="text-xs text-neutral-400 max-w-sm mx-auto leading-relaxed font-light">
-                Your cinematic vision inquiry has been saved successfully in Moon&apos;s database. Our team will review your specs and reach out within 24 hours.
+                Your inquiry has been sent successfully. I will review your request and get back to you soon.
               </p>
             </div>
 
@@ -184,7 +170,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Sarah Jenkins"
+                  placeholder="Your Name"
                   className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none placeholder:text-neutral-600 font-light"
                 />
               </div>
@@ -199,64 +185,42 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="sarah@voguemedia.co"
+                  placeholder="your.email@example.com"
                   className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none placeholder:text-neutral-600 font-light"
                 />
               </div>
 
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              
-              {/* Project Type Selection */}
-              <div className="space-y-1.5">
-                <label htmlFor="projectType" className="block text-[9px] font-mono text-neutral-400 uppercase tracking-widest font-light">Project Category</label>
-                <select
-                  id="projectType"
-                  name="projectType"
-                  value={formData.projectType}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none font-light"
-                >
-                  {projectTypes.map((type) => (
-                    <option key={type} value={type} className="bg-neutral-950 text-neutral-200">
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Budget tier */}
-              <div className="space-y-1.5">
-                <label htmlFor="budget" className="block text-[9px] font-mono text-neutral-400 uppercase tracking-widest font-light">Estimated Budget</label>
-                <select
-                  id="budget"
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none font-light"
-                >
-                  {budgetOptions.map((tier) => (
-                    <option key={tier} value={tier} className="bg-neutral-950 text-neutral-200">
-                      {tier}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
+            {/* Project Category Selection (Full Width) */}
+            <div className="space-y-1.5">
+              <label htmlFor="projectType" className="block text-[9px] font-mono text-neutral-400 uppercase tracking-widest font-light">Project Category</label>
+              <select
+                id="projectType"
+                name="projectType"
+                value={formData.projectType}
+                onChange={handleChange}
+                className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none font-light cursor-pointer"
+              >
+                {projectTypes.map((type) => (
+                  <option key={type} value={type} className="bg-neutral-950 text-neutral-200">
+                    {type}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Message Narrative text */}
             <div className="space-y-1.5">
-              <label htmlFor="message" className="block text-[9px] font-mono text-neutral-400 uppercase tracking-widest">Project Scope & Details <span className="text-accent-purple">*</span></label>
+              <label htmlFor="message" className="block text-[9px] font-mono text-neutral-400 uppercase tracking-widest">Project Scope &amp; Details <span className="text-accent-purple">*</span></label>
               <textarea
                 id="message"
                 name="message"
                 required
-                rows={4}
+                rows={5}
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Briefly describe the theme, shoot location, duration, and stylistic expectations..."
+                placeholder="Briefly describe the concept, timeline, location, and key requirements for your project..."
                 className="w-full px-3 py-2.5 rounded bg-neutral-900/60 border border-white/5 focus:border-accent-purple text-white text-xs transition-colors focus:outline-none placeholder:text-neutral-600 leading-relaxed font-light resize-none"
               />
             </div>
@@ -271,12 +235,12 @@ export const ContactForm: React.FC<ContactFormProps> = ({ settings, onSubmit }) 
               {isSubmitting ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                  <span>Transmitting Vision...</span>
+                  <span>Transmitting...</span>
                 </>
               ) : (
                 <>
                   <Send className="w-3 h-3 fill-current" />
-                  <span>Transmit Booking Specs</span>
+                  <span>Send Message</span>
                 </>
               )}
             </button>

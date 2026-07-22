@@ -9,7 +9,7 @@ export const INITIAL_PORTFOLIO_ITEMS: PortfolioItem[] = [
   {
     id: 'neon-dreams',
     title: 'Neon Dreams',
-    category: 'Brand Story (For Brands & Artists)',
+    category: 'Brand & Promotional',
     description: 'A moody, cyber-aesthetic visual journey through dark alleys and high-contrast rain-slicked streets. Filmed entirely on location with custom anamorphic lenses and stylized deep-violet color grading.',
     videoUrl: 'https://player.vimeo.com/external/517725674.sd.mp4?s=d01072a44f91e9f1661642c2be63e3d2bf93f55e&profile_id=165&oauth2_token_id=57447761',
     thumbnailUrl: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80',
@@ -22,7 +22,7 @@ export const INITIAL_PORTFOLIO_ITEMS: PortfolioItem[] = [
   {
     id: 'whispering-summit',
     title: 'The Whispering Summit',
-    category: 'Interview & Documentary',
+    category: 'Documentary & Interviews',
     description: 'A slow-burn poetic documentary tracking a solo mountaineer attempting to climb the northern alpine ridges in winter. Captured the raw solitude, howling wind, and towering snow-capped peaks.',
     videoUrl: 'https://player.vimeo.com/external/435674703.sd.mp4?s=7a82b937000fa26f63334c975a5075d9e51c36b8&profile_id=165&oauth2_token_id=57447761',
     thumbnailUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80',
@@ -35,7 +35,7 @@ export const INITIAL_PORTFOLIO_ITEMS: PortfolioItem[] = [
   {
     id: 'aura-de-haute',
     title: 'Aura de Haute',
-    category: 'Brand Story (For Brands & Artists)',
+    category: 'Brand & Promotional',
     description: 'High-contrast editorial fashion film focusing on kinetic motion, luxury silhouettes, and dramatic chiaroscuro studio lighting structures in an industrial concrete gallery.',
     videoUrl: 'https://player.vimeo.com/external/554142371.sd.mp4?s=c82662c19e5d4cb05ef259cbdf084478330d43a5&profile_id=165&oauth2_token_id=57447761',
     thumbnailUrl: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80',
@@ -46,9 +46,22 @@ export const INITIAL_PORTFOLIO_ITEMS: PortfolioItem[] = [
     featured: false
   },
   {
+    id: 'luminous-summit-2025',
+    title: 'Luminous Summit 2025',
+    category: 'Events',
+    description: 'High-energy official highlight aftermovie capturing keynotes, immersive light installations, and live stage performances at the annual tech & design conference.',
+    videoUrl: 'https://player.vimeo.com/external/517725674.sd.mp4?s=d01072a44f91e9f1661642c2be63e3d2bf93f55e&profile_id=165&oauth2_token_id=57447761',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
+    year: '2025',
+    role: 'Lead Event Cinematographer',
+    client: 'Luminous Global Forum',
+    gearUsed: 'Sony FX6, Sony FX3, Ronin RS3 Pro',
+    featured: true
+  },
+  {
     id: 'chronos-precision',
     title: 'Chronos: Precision Redefined',
-    category: 'Startup Content (Product & Promo)',
+    category: 'Brand & Promotional',
     description: 'Extreme macro-cinematography commercial showcasing the delicate gear assembly and premium material selection of an artisanal Swiss watchmaker.',
     videoUrl: 'https://player.vimeo.com/external/392270511.sd.mp4?s=27027598816c21e6ef6df0b73df05bf2fbf74b0c&profile_id=165&oauth2_token_id=57447761',
     thumbnailUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80',
@@ -61,7 +74,7 @@ export const INITIAL_PORTFOLIO_ITEMS: PortfolioItem[] = [
   {
     id: 'echoes-of-coast',
     title: 'Echoes of the Coast',
-    category: 'Culture Project (Performance & Festival)',
+    category: 'Cultural Projects',
     description: 'An evocative cinematic travelogue shot along the rugged volcanic cliffs and black sand shores of Iceland, capturing raw environmental power, glacial rivers, and morning fog.',
     videoUrl: 'https://player.vimeo.com/external/394343160.sd.mp4?s=529e3a73c14d9bbf1f57917e76166a4f91ef2c0f&profile_id=165&oauth2_token_id=57447761',
     thumbnailUrl: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80',
@@ -82,6 +95,7 @@ export const INITIAL_SITE_SETTINGS: SiteSettings = {
   instagramUrl: 'https://instagram.com',
   vimeoUrl: 'https://vimeo.com',
   youtubeUrl: 'https://youtube.com',
+  exploreDanceUrl: 'https://instagram.com',
   contactEmail: 'creativearts.moon@gmail.com',
   contactPhone: '+82 10-1234-5678',
   accentColor: '#8A2BE2', // Electric Purple

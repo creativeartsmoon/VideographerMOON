@@ -102,10 +102,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreCli
         <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto" id="hero-actions">
           <button
             onClick={onExploreClick}
-            className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-black font-semibold text-sm uppercase tracking-widest hover:bg-neutral-200 active:scale-95 transition-all duration-300 shadow-xl"
+            className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-black font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-xl relative overflow-hidden group hover:bg-accent-purple hover:text-white hover:shadow-[0_0_30px_rgba(138,43,226,0.65)] hover:border-accent-purple border border-transparent active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
             id="hero-explore-btn"
           >
-            Services
+            <span className="relative z-10 font-bold tracking-widest">Works</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-purple via-purple-500 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
           
           <button

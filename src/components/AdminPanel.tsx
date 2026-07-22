@@ -269,7 +269,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const startAddNew = () => {
     setItemForm({
       title: '',
-      category: 'Brand Story (For Brands & Artists)',
+      category: 'Brand & Promotional',
       description: '',
       videoUrl: '',
       thumbnailUrl: '',
@@ -629,10 +629,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                         onChange={(e) => setItemForm({ ...itemForm, category: e.target.value })}
                         className="w-full px-4.5 py-2.5 rounded bg-neutral-900 border border-white/5 focus:border-accent-purple text-white text-sm focus:outline-none"
                       >
-                        <option value="Brand Story (For Brands & Artists)">Brand Story (For Brands & Artists)</option>
-                        <option value="Startup Content (Product & Promo)">Startup Content (Product & Promo)</option>
-                        <option value="Culture Project (Performance & Festival)">Culture Project (Performance & Festival)</option>
-                        <option value="Interview & Documentary">Interview & Documentary</option>
+                        <option value="Brand & Promotional">Brand &amp; Promotional</option>
+                        <option value="Events">Events</option>
+                        <option value="Cultural Projects">Cultural Projects</option>
+                        <option value="Documentary & Interviews">Documentary &amp; Interviews</option>
                         <option value="Other Creative Project">Other Creative Project</option>
                       </select>
                     </div>
@@ -1074,6 +1074,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     className="w-full px-4 py-2.5 rounded bg-neutral-900 border border-white/5 focus:border-accent-purple text-white text-sm focus:outline-none"
                   />
                 </div>
+              </div>
+
+              {/* Explore Dance URL */}
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-mono text-accent-purple uppercase tracking-widest font-semibold">Explore Dance Button Link URL</label>
+                <input
+                  type="url"
+                  value={settingsForm.exploreDanceUrl || ''}
+                  onChange={(e) => setSettingsForm({ ...settingsForm, exploreDanceUrl: e.target.value })}
+                  placeholder="https://instagram.com"
+                  className="w-full px-4.5 py-2.5 rounded bg-neutral-900 border border-accent-purple/30 focus:border-accent-purple text-white text-sm focus:outline-none font-mono"
+                />
+                <p className="text-[10px] font-mono text-neutral-500">Destination link for the Explore Dance → button in header navigation.</p>
               </div>
 
               {/* SEO Tags */}

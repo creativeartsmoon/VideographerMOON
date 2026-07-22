@@ -26,6 +26,7 @@ export interface SiteSettings {
   instagramUrl: string;
   vimeoUrl: string;
   youtubeUrl: string;
+  exploreDanceUrl?: string;
   contactEmail: string;
   contactPhone: string;
   accentColor: string; // Hex color code
@@ -39,7 +40,7 @@ export interface ContactInquiry {
   name: string;
   email: string;
   projectType: string;
-  budget: string;
+  budget?: string;
   message: string;
   createdAt: string;
   status: 'new' | 'read' | 'replied' | 'archived';

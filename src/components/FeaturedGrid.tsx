@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Play, Film, Calendar, Eye, Layers, BookOpen, Rocket, Compass, Mic, Briefcase, Music, Video } from 'lucide-react';
+import { Play, Film, Calendar, Eye, Layers, BookOpen, Rocket, Compass, Mic, Briefcase, Music, Video, Award } from 'lucide-react';
 import { PortfolioItem } from '../types';
 
 interface FeaturedGridProps {
@@ -19,9 +19,11 @@ export const FeaturedGrid: React.FC<FeaturedGridProps> = ({ items, onProjectSele
   // Dynamically extract unique categories from loaded portfolio items database
   const categories = useMemo(() => {
     const list = items.map(item => item.category);
-    // filter duplicates and clean
-    const unique = Array.from(new Set(list)).filter(Boolean);
-    return ['All', ...unique];
+    // Core categories list ensuring standard clean display order
+    const coreCategories = ['Brand & Promotional', 'Events', 'Cultural Projects', 'Documentary & Interviews'];
+    const customCategories = list.filter(c => c && !coreCategories.includes(c));
+    const uniqueCustom = Array.from(new Set(customCategories));
+    return ['All', ...coreCategories, ...uniqueCustom];
   }, [items]);
 
   // Filter items according to active selection
@@ -40,13 +42,10 @@ export const FeaturedGrid: React.FC<FeaturedGridProps> = ({ items, onProjectSele
   const getCategoryIcon = (category: string) => {
     const cat = category.toLowerCase();
     if (cat === 'all') return <Layers className="w-3.5 h-3.5 text-neutral-400" />;
-    if (cat.includes('brand')) return <BookOpen className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('startup') || cat.includes('content')) return <Rocket className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('culture') || cat.includes('film')) return <Compass className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('interview') || cat.includes('documentary')) return <Mic className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('commercial')) return <Briefcase className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('music')) return <Music className="w-3.5 h-3.5 text-accent-purple" />;
-    if (cat.includes('narrative') || cat.includes('video') || cat.includes('travel') || cat.includes('fashion')) return <Video className="w-3.5 h-3.5 text-accent-purple" />;
+    if (cat.includes('brand') || cat.includes('promo')) return <Award className="w-3.5 h-3.5 text-accent-purple" />;
+    if (cat.includes('event')) return <Calendar className="w-3.5 h-3.5 text-accent-purple" />;
+    if (cat.includes('cultur') || cat.includes('art')) return <Compass className="w-3.5 h-3.5 text-accent-purple" />;
+    if (cat.includes('documentary') || cat.includes('interview') || cat.includes('mic')) return <Mic className="w-3.5 h-3.5 text-accent-purple" />;
     return <Film className="w-3.5 h-3.5 text-accent-purple" />;
   };
 

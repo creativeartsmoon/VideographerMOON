@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Instagram, Youtube, Menu, X } from 'lucide-react';
+import { Instagram, Youtube, Menu, X, ArrowRight } from 'lucide-react';
 import { SiteSettings } from '../types';
 
 interface HeaderProps {
@@ -49,8 +49,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, setting
             </div>
           </button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8" id="desktop-nav">
+          {/* Desktop Navigation & SNS Icons next to Contact */}
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8" id="desktop-nav">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -68,32 +68,45 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, setting
                 )}
               </button>
             ))}
+
+            {/* SNS Icons immediately beside Contact */}
+            <div className="flex items-center gap-3 border-l border-white/10 pl-5 text-neutral-400" id="desktop-socials">
+              {settings.instagramUrl && (
+                <a
+                  href={settings.instagramUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="hover:text-accent-purple transition-colors p-1"
+                  aria-label="Instagram Profile"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+              )}
+              {settings.youtubeUrl && (
+                <a
+                  href={settings.youtubeUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="hover:text-accent-purple transition-colors p-1"
+                  aria-label="YouTube Channel"
+                >
+                  <Youtube className="w-4 h-4" />
+                </a>
+              )}
+            </div>
           </nav>
 
-          {/* Social Icons (Desktop) */}
-          <div className="hidden lg:flex items-center gap-4 border-l border-white/10 pl-6" id="desktop-socials">
-            {settings.instagramUrl && (
-              <a
-                href={settings.instagramUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-neutral-400 hover:text-accent-purple transition-colors p-1"
-                aria-label="Instagram Profile"
-              >
-                <Instagram className="w-4.5 h-4.5" />
-              </a>
-            )}
-            {settings.youtubeUrl && (
-              <a
-                href={settings.youtubeUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-neutral-400 hover:text-accent-purple transition-colors p-1"
-                aria-label="YouTube Channel"
-              >
-                <Youtube className="w-4.5 h-4.5" />
-              </a>
-            )}
+          {/* Explore Dance → Button on the right */}
+          <div className="hidden md:flex items-center" id="header-explore-dance-btn">
+            <a
+              href={settings.exploreDanceUrl || 'https://instagram.com'}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="px-4 py-2 rounded-full bg-accent-purple/10 border border-accent-purple/40 hover:border-accent-purple text-xs font-mono uppercase tracking-wider text-white hover:bg-accent-purple/20 transition-all duration-300 flex items-center gap-2 group shadow-[0_0_15px_rgba(138,43,226,0.15)] cursor-pointer"
+            >
+              <span>Explore Dance</span>
+              <ArrowRight className="w-3.5 h-3.5 text-accent-purple group-hover:translate-x-1 transition-transform" />
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -111,32 +124,47 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, setting
 
       {/* Mobile Drawer */}
       {isOpen && (
-        <div className="md:hidden glass-card border-t border-white/5 animate-fade-in py-4 px-6 space-y-3" id="mobile-nav-container">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id);
-                setIsOpen(false);
-              }}
-              className={`block w-full text-center py-2.5 px-3 rounded-lg text-sm font-medium uppercase tracking-widest transition-all ${
-                activeTab === item.id 
-                  ? 'bg-accent-purple/10 text-accent-purple border-b border-accent-purple' 
-                  : 'text-neutral-400 hover:text-white hover:bg-white/5'
-              }`}
+        <div className="md:hidden glass-card border-t border-white/5 animate-fade-in py-4 px-6 space-y-4" id="mobile-nav-container">
+          <div className="space-y-2">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setIsOpen(false);
+                }}
+                className={`block w-full text-center py-2.5 px-3 rounded-lg text-sm font-medium uppercase tracking-widest transition-all ${
+                  activeTab === item.id 
+                    ? 'bg-accent-purple/10 text-accent-purple border-b border-accent-purple' 
+                    : 'text-neutral-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Explore Dance button for mobile */}
+          <div className="pt-2">
+            <a
+              href={settings.exploreDanceUrl || 'https://instagram.com'}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="w-full py-2.5 rounded-full bg-accent-purple/10 border border-accent-purple/40 hover:border-accent-purple text-xs font-mono uppercase tracking-wider text-white flex items-center justify-center gap-2 group shadow-[0_0_15px_rgba(138,43,226,0.15)]"
             >
-              {item.label}
-            </button>
-          ))}
-          
+              <span>Explore Dance</span>
+              <ArrowRight className="w-3.5 h-3.5 text-accent-purple group-hover:translate-x-1 transition-transform" />
+            </a>
+          </div>
+
           {/* Social Icons mobile */}
-          <div className="flex items-center gap-5 pt-3 border-t border-white/5 pl-3">
+          <div className="flex items-center justify-center gap-6 pt-3 border-t border-white/5">
             {settings.instagramUrl && (
               <a
                 href={settings.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-neutral-400 hover:text-accent-purple transition-colors"
+                className="text-neutral-400 hover:text-accent-purple transition-colors p-1"
                 aria-label="Instagram"
               >
                 <Instagram className="w-5 h-5" />
@@ -147,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, setting
                 href={settings.youtubeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-neutral-400 hover:text-accent-purple transition-colors"
+                className="text-neutral-400 hover:text-accent-purple transition-colors p-1"
                 aria-label="YouTube"
               >
                 <Youtube className="w-5 h-5" />
