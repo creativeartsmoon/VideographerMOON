@@ -29,6 +29,7 @@ const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => 
 export default function App() {
   // Navigation active state
   const [activeTab, setActiveTab] = useState<string>('home');
+  const [previousTab, setPreviousTab] = useState<string>('home');
 
   // Database Local States
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
@@ -38,6 +39,17 @@ export default function App() {
   // Selected project for modal detail popup
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Home Page Selected Works prioritizing highlighted (featured) items first
+  const homeSelectedWorks = React.useMemo(() => {
+    return [...portfolioItems]
+      .sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      })
+      .slice(0, 3);
+  }, [portfolioItems]);
 
   // 1. Initialize local storage database on load
   useEffect(() => {
@@ -49,31 +61,16 @@ export default function App() {
       if (savedItems) {
         try {
           const parsed = JSON.parse(savedItems) as PortfolioItem[];
-          let updated = false;
-          const migrated = parsed.map(item => {
-            let category = item.category;
-            if (category.includes('Brand') || category.includes('Startup') || category === 'Music Video' || category === 'Fashion' || category === 'Commercial') {
-              category = 'Brand & Promotional';
-              updated = true;
-            } else if (category.includes('Culture') || category.includes('Festival')) {
-              category = 'Cultural Projects';
-              updated = true;
-            } else if (category.includes('Interview') || category.includes('Documentary') || category === 'Narrative') {
-              category = 'Documentary & Interviews';
-              updated = true;
-            } else if (category === 'Travel' || category === 'Event' || category === 'Events') {
-              category = 'Events';
-              updated = true;
-            }
-            return { ...item, category };
-          });
-          setPortfolioItems(migrated);
-          if (updated) {
-            localStorage.setItem('videomoon_portfolio_items', JSON.stringify(migrated));
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPortfolioItems(parsed);
+          } else {
+            setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
+            localStorage.setItem('videomoon_portfolio_items', JSON.stringify(INITIAL_PORTFOLIO_ITEMS));
           }
         } catch (e) {
-          console.error('Error parsing or migrating saved portfolio items:', e);
+          console.error('Error parsing saved portfolio items:', e);
           setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
+          localStorage.setItem('videomoon_portfolio_items', JSON.stringify(INITIAL_PORTFOLIO_ITEMS));
         }
       } else {
         setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
@@ -81,55 +78,16 @@ export default function App() {
       }
 
       if (savedSettings) {
-        const parsed = JSON.parse(savedSettings);
-        let updated = false;
-        if (parsed.siteTagline === 'Cinematic Storytelling through a Luxurious, Minimalist Lens.' || 
-            parsed.siteTagline === 'Cinematic storytelling through a luxurious, minimalist lens.' ||
-            parsed.siteTagline === '빛의 궤적으로 그리는 시네마틱 서사, 감각적인 모든 찰나의 기록.' ||
-            parsed.siteTagline === 'Capturing the unique stories of brands and people through captivating cinematic visuals.' ||
-            parsed.siteTagline === 'From vision to story, from story to impact' ||
-            parsed.siteTagline === 'From vision to story, from story to impact — crafting cinematic narratives for visionary artists and innovative startups.' ||
-            parsed.siteTagline === 'From vision to story. From story to impact. Crafting thoughtful films for brands, artists, and cultural projects.' ||
-            parsed.siteTagline === 'From vision to story. From story to impact. Crafting thoughtful visual stories for brands, artists, and cultural projects.') {
-          parsed.siteTagline = 'From vision to story. From story to impact.\nCrafting thoughtful visual stories for brands, artists, and cultural projects.';
-          updated = true;
-        }
-        const NEW_BIO = "I am Moon Young-Woo, a dedicated video producer and visual creator specializing in crafting thoughtful films for brands, artists, and cultural projects. I focus on translating a client's vision into structured narrative content—ranging from brand storytelling to startup promo videos and cultural performance archives.\n\nMy work is driven by a collaborative, step-by-step production process where transparent communication and technical reliability come first. Rather than chasing superficial aesthetics, I believe that a true visual story is built on absolute reliability, precise execution, and a deep understanding of your brand's core message. I manage the entire production cycle with systematic precision to ensure your project is delivered on time, within scope, and with absolute peace of mind.";
-        if (!parsed.bio || 
-            parsed.bio.includes("award-winning") || 
-            parsed.bio.includes("high-end") || 
-            parsed.bio.includes("cinematic masterpiece") ||
-            parsed.bio.includes("professional filmmaker and creative producer entering my third year")) {
-          parsed.bio = NEW_BIO;
-          updated = true;
-        }
-        if (parsed.heroVideoUrl === 'https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c054aa2b97fcc85a21e9ec6b0631620c&profile_id=164&oauth2_token_id=57447761') {
-          parsed.heroVideoUrl = '';
-          updated = true;
-        }
-        const oldPasscodeHash = '981cf69707e4bc8310c3f596b9968434863c1a3ebfa9eb2b3ef7bf3c9a62a98f'; // SHA-256 of 'moon123'
-        const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c'; // SHA-256 of '1111'
-        const wrongDefaultHash = '011ece28a562ce5a5288b2225a07c4b03650f00f07df4d68bf4e7e6001090332'; // Incorrect hash previously set
-        
-        if (!parsed.adminPasscode) {
-          parsed.adminPasscode = defaultPasscodeHash;
-          updated = true;
-        } else if (parsed.adminPasscode.length !== 64) {
-          const hashedInput = sha256(parsed.adminPasscode.trim());
-          if (hashedInput === oldPasscodeHash) {
+        try {
+          const parsed = JSON.parse(savedSettings);
+          const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
+          if (!parsed.adminPasscode) {
             parsed.adminPasscode = defaultPasscodeHash;
-          } else {
-            parsed.adminPasscode = hashedInput;
           }
-          updated = true;
-        } else if (parsed.adminPasscode === oldPasscodeHash || parsed.adminPasscode === wrongDefaultHash) {
-          // If the stored value is already the old hash or incorrect default hash, upgrade it to the new default '1111' hash
-          parsed.adminPasscode = defaultPasscodeHash;
-          updated = true;
-        }
-        setSiteSettings(parsed);
-        if (updated) {
-          localStorage.setItem('videomoon_site_settings', JSON.stringify(parsed));
+          setSiteSettings(parsed);
+        } catch (e) {
+          setSiteSettings(INITIAL_SITE_SETTINGS);
+          localStorage.setItem('videomoon_site_settings', JSON.stringify(INITIAL_SITE_SETTINGS));
         }
       } else {
         setSiteSettings(INITIAL_SITE_SETTINGS);
@@ -137,13 +95,18 @@ export default function App() {
       }
 
       if (savedInquiries) {
-        setInquiries(JSON.parse(savedInquiries));
+        try {
+          setInquiries(JSON.parse(savedInquiries));
+        } catch (e) {
+          setInquiries(INITIAL_CONTACT_INQUIRIES);
+          localStorage.setItem('videomoon_contact_inquiries', JSON.stringify(INITIAL_CONTACT_INQUIRIES));
+        }
       } else {
         setInquiries(INITIAL_CONTACT_INQUIRIES);
         localStorage.setItem('videomoon_contact_inquiries', JSON.stringify(INITIAL_CONTACT_INQUIRIES));
       }
     } catch (e) {
-      console.error('Local database initialization failed, falling back to static schema.', e);
+      console.error('Local database initialization failed:', e);
       setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
       setSiteSettings(INITIAL_SITE_SETTINGS);
       setInquiries(INITIAL_CONTACT_INQUIRIES);
@@ -202,6 +165,10 @@ export default function App() {
 
   // Centralized tab navigation handler updating URL path & browser history
   const handleTabChange = (tab: string, pushHistory = true) => {
+    if (activeTab !== 'admin' && tab === 'admin') {
+      setPreviousTab(activeTab);
+    }
+
     let targetPath = '/home';
     if (tab === 'home') targetPath = '/home';
     else if (tab === 'about') targetPath = '/about';
@@ -528,7 +495,7 @@ export default function App() {
 
               {/* Renders 3 Featured Reels */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" id="home-portfolio-grid">
-                {portfolioItems.slice(0, 3).map((project) => (
+                {homeSelectedWorks.map((project) => (
                   <article
                     key={project.id}
                     onClick={() => handleProjectSelect(project)}
@@ -887,6 +854,7 @@ export default function App() {
                 onUpdatePortfolio={handleUpdatePortfolio}
                 onUpdateSettings={handleUpdateSettings}
                 onUpdateInquiries={handleUpdateInquiries}
+                onClose={() => handleTabChange(previousTab || 'home')}
               />
             </React.Suspense>
           </section>

@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Lock, KeyRound, LayoutGrid, Settings, Inbox, Database, Plus, Trash2, 
-  Edit3, Check, Save, Download, Upload, Eye, EyeOff, Film, Sparkles, CheckSquare, Square, Camera
+  Edit3, Check, Save, Download, Upload, Eye, EyeOff, Film, Sparkles, CheckSquare, Square, Camera, X
 } from 'lucide-react';
 import { PortfolioItem, SiteSettings, ContactInquiry } from '../types';
 import { sha256 } from '../utils/security';
@@ -18,6 +18,7 @@ interface AdminPanelProps {
   onUpdatePortfolio: (items: PortfolioItem[]) => void;
   onUpdateSettings: (settings: SiteSettings) => void;
   onUpdateInquiries: (inquiries: ContactInquiry[]) => void;
+  onClose?: () => void;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -27,6 +28,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onUpdatePortfolio,
   onUpdateSettings,
   onUpdateInquiries,
+  onClose,
 }) => {
   const [passcode, setPasscode] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -392,9 +394,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Access check protection wall
   if (!isAuthenticated) {
     return (
-      <section className="min-h-[75vh] flex items-center justify-center py-20 px-4" id="admin-login-screen">
+      <section className="min-h-[75vh] flex items-center justify-center py-20 px-4 relative" id="admin-login-screen">
         <div className="w-full max-w-md bg-neutral-950 p-8 rounded-xl border border-white/10 glass-card shadow-2xl relative">
           
+          {/* Close button top-right */}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              title="Close Admin Panel (창 닫기)"
+              aria-label="Close Admin"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+
           {/* Subtle logo inside portal lock */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-black border border-accent-purple flex items-center justify-center text-accent-purple shadow-[0_0_20px_rgba(138,43,226,0.4)]">
             <Lock className="w-5 h-5" />
@@ -433,12 +448,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-semibold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
+              className="w-full py-3.5 rounded-lg bg-white hover:bg-neutral-200 text-black font-semibold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2 shadow-lg cursor-pointer"
               id="admin-login-submit"
             >
               <KeyRound className="w-4 h-4" />
               Unlock Console
             </button>
+
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full py-2.5 rounded-lg border border-white/10 hover:border-white/20 text-neutral-400 hover:text-white text-xs font-mono uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2"
+              >
+                <X className="w-3.5 h-3.5" /> Close (창 닫기)
+              </button>
+            )}
           </form>
 
         </div>
@@ -455,16 +480,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           <span className="text-xs font-mono text-accent-purple uppercase tracking-widest">Operator Portal</span>
           <h2 className="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">System Controls</h2>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-[10px] font-mono text-green-400">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-[10px] font-mono text-green-400">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" /> Connection secure
           </span>
           <button
             onClick={() => setIsAuthenticated(false)}
-            className="text-xs font-mono text-neutral-500 hover:text-white transition-colors"
+            className="text-xs font-mono text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 cursor-pointer"
           >
             Lock System
           </button>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="px-3.5 py-1.5 rounded bg-accent-purple/20 border border-accent-purple/40 hover:bg-accent-purple/30 text-white text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:shadow-accent-purple/20"
+              title="Close Admin Panel (창 닫기)"
+              id="close-admin-btn"
+            >
+              <X className="w-3.5 h-3.5 text-accent-purple" />
+              <span>Close (창 닫기)</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -571,17 +607,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-2.5 shrink-0">
+                          {/* Quick Highlight toggle */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = portfolioItems.map(p => p.id === item.id ? { ...p, featured: !p.featured } : p);
+                              onUpdatePortfolio(updated);
+                            }}
+                            className={`px-2.5 py-1.5 rounded text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer border ${
+                              item.featured 
+                                ? 'bg-accent-purple/20 border-accent-purple/50 text-accent-purple hover:bg-accent-purple/30' 
+                                : 'bg-neutral-900 border-white/10 text-neutral-400 hover:text-white hover:border-white/20'
+                            }`}
+                            title={item.featured ? 'Click to un-highlight' : 'Click to highlight (Shows on Home Selected Work)'}
+                          >
+                            <Sparkles className={`w-3 h-3 ${item.featured ? 'text-accent-purple fill-accent-purple/30' : 'text-neutral-500'}`} />
+                            <span>{item.featured ? 'Highlighted' : 'Highlight'}</span>
+                          </button>
+
                           <button
                             onClick={() => startEdit(item)}
-                            className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-accent-purple/40 text-neutral-400 hover:text-white transition-all"
+                            className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-accent-purple/40 text-neutral-400 hover:text-white transition-all cursor-pointer"
                             title="Edit project"
                           >
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => deleteItem(item.id)}
-                            className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-red-500/40 text-neutral-400 hover:text-red-400 transition-all"
+                            className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-red-500/40 text-neutral-400 hover:text-red-400 transition-all cursor-pointer"
                             title="Delete project"
                           >
                             <Trash2 className="w-4 h-4" />
