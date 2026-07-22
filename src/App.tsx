@@ -24,6 +24,14 @@ import { ProjectModal } from './components/ProjectModal';
 import { ContactForm } from './components/ContactForm';
 import { sha256 } from './utils/security';
 import { getAutoThumbnailUrl } from './utils/media';
+import { 
+  fetchPortfolioItems, 
+  savePortfolioItems, 
+  fetchSiteSettings, 
+  saveSiteSettings, 
+  fetchContactInquiries, 
+  saveContactInquiries 
+} from './services/dataService';
 
 const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
 
@@ -52,66 +60,27 @@ export default function App() {
       .slice(0, 3);
   }, [portfolioItems]);
 
-  // 1. Initialize local storage database on load
+  // 1. Initialize data from Supabase / localStorage on load
   useEffect(() => {
-    try {
-      const savedItems = localStorage.getItem('videomoon_portfolio_items');
-      const savedSettings = localStorage.getItem('videomoon_site_settings');
-      const savedInquiries = localStorage.getItem('videomoon_contact_inquiries');
-
-      if (savedItems) {
-        try {
-          const parsed = JSON.parse(savedItems) as PortfolioItem[];
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setPortfolioItems(parsed);
-          } else {
-            setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
-            localStorage.setItem('videomoon_portfolio_items', JSON.stringify(INITIAL_PORTFOLIO_ITEMS));
-          }
-        } catch (e) {
-          console.error('Error parsing saved portfolio items:', e);
-          setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
-          localStorage.setItem('videomoon_portfolio_items', JSON.stringify(INITIAL_PORTFOLIO_ITEMS));
+    let isMounted = true;
+    async function loadData() {
+      try {
+        const [pItems, sSettings, cInquiries] = await Promise.all([
+          fetchPortfolioItems(),
+          fetchSiteSettings(),
+          fetchContactInquiries(),
+        ]);
+        if (isMounted) {
+          if (pItems && pItems.length >= 0) setPortfolioItems(pItems);
+          if (sSettings) setSiteSettings(sSettings);
+          if (cInquiries) setInquiries(cInquiries);
         }
-      } else {
-        setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
-        localStorage.setItem('videomoon_portfolio_items', JSON.stringify(INITIAL_PORTFOLIO_ITEMS));
+      } catch (err) {
+        console.error('Error loading data in App:', err);
       }
-
-      if (savedSettings) {
-        try {
-          const parsed = JSON.parse(savedSettings);
-          const defaultPasscodeHash = '0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c';
-          if (!parsed.adminPasscode) {
-            parsed.adminPasscode = defaultPasscodeHash;
-          }
-          setSiteSettings(parsed);
-        } catch (e) {
-          setSiteSettings(INITIAL_SITE_SETTINGS);
-          localStorage.setItem('videomoon_site_settings', JSON.stringify(INITIAL_SITE_SETTINGS));
-        }
-      } else {
-        setSiteSettings(INITIAL_SITE_SETTINGS);
-        localStorage.setItem('videomoon_site_settings', JSON.stringify(INITIAL_SITE_SETTINGS));
-      }
-
-      if (savedInquiries) {
-        try {
-          setInquiries(JSON.parse(savedInquiries));
-        } catch (e) {
-          setInquiries(INITIAL_CONTACT_INQUIRIES);
-          localStorage.setItem('videomoon_contact_inquiries', JSON.stringify(INITIAL_CONTACT_INQUIRIES));
-        }
-      } else {
-        setInquiries(INITIAL_CONTACT_INQUIRIES);
-        localStorage.setItem('videomoon_contact_inquiries', JSON.stringify(INITIAL_CONTACT_INQUIRIES));
-      }
-    } catch (e) {
-      console.error('Local database initialization failed:', e);
-      setPortfolioItems(INITIAL_PORTFOLIO_ITEMS);
-      setSiteSettings(INITIAL_SITE_SETTINGS);
-      setInquiries(INITIAL_CONTACT_INQUIRIES);
     }
+    loadData();
+    return () => { isMounted = false; };
   }, []);
 
   // 2. Path & Hash navigation hook for deep-linking & back/forward browser history support
@@ -215,17 +184,17 @@ export default function App() {
   // Database mutation sync handlers
   const handleUpdatePortfolio = (updatedItems: PortfolioItem[]) => {
     setPortfolioItems(updatedItems);
-    localStorage.setItem('videomoon_portfolio_items', JSON.stringify(updatedItems));
+    savePortfolioItems(updatedItems);
   };
 
   const handleUpdateSettings = (updatedSettings: SiteSettings) => {
     setSiteSettings(updatedSettings);
-    localStorage.setItem('videomoon_site_settings', JSON.stringify(updatedSettings));
+    saveSiteSettings(updatedSettings);
   };
 
   const handleUpdateInquiries = (updatedInquiries: ContactInquiry[]) => {
     setInquiries(updatedInquiries);
-    localStorage.setItem('videomoon_contact_inquiries', JSON.stringify(updatedInquiries));
+    saveContactInquiries(updatedInquiries);
   };
 
   // Submit client inquiry booking message

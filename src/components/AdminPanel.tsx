@@ -68,6 +68,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   // Backup file state
   const [importedJson, setImportedJson] = useState('');
   const [importStatus, setImportStatus] = useState({ success: false, message: '' });
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3500);
+  };
 
   // Handle lockout countdown timer
   useEffect(() => {
@@ -98,7 +106,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       timeoutId = setTimeout(() => {
         setIsAuthenticated(false);
         setPasscode('');
-        alert('Security Alert: Session automatically locked due to 10 minutes of inactivity.');
+        showToast('Security Alert: Session automatically locked due to inactivity.', 'info');
       }, 10 * 60 * 1000); // 10 minutes
     };
     
@@ -219,7 +227,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     }
     
     onUpdateSettings(finalSettings);
-    alert('Site-wide settings updated successfully!');
+    showToast('Site-wide settings updated successfully!', 'success');
   };
 
   // Image upload and Drag/Drop handlers for profile portrait
@@ -227,7 +235,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert('Image size should be less than 2MB for storage efficiency.');
+        showToast('Image size should be less than 2MB for storage efficiency.', 'error');
         return;
       }
       const reader = new FileReader();
@@ -255,7 +263,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     const file = e.dataTransfer.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert('Image size should be less than 2MB for storage efficiency.');
+        showToast('Image size should be less than 2MB for storage efficiency.', 'error');
         return;
       }
       const reader = new FileReader();
@@ -297,7 +305,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const saveItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!itemForm.title || !itemForm.videoUrl) {
-      alert('Title and Video URL are required.');
+      showToast('Title and Video URL are required.', 'error');
       return;
     }
 
@@ -336,14 +344,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     onUpdatePortfolio(updatedList);
     setIsAddingNew(false);
     setEditingItem(null);
-    alert('Portfolio project saved successfully!');
+    showToast('Portfolio project saved successfully!', 'success');
   };
 
-  // CRUD: Delete project item
-  const deleteItem = (id: string) => {
-    if (confirm('Are you absolutely sure you want to delete this portfolio project? This cannot be undone.')) {
+  // CRUD: Delete project item trigger
+  const deleteItem = (id: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const itemToDelete = portfolioItems.find((p) => p.id === id);
+    const itemTitle = itemToDelete ? `"${itemToDelete.title}"` : 'this project';
+
+    if (window.confirm(`Delete ${itemTitle}? This action will permanently remove it.`)) {
       const updatedList = portfolioItems.filter((item) => item.id !== id);
       onUpdatePortfolio(updatedList);
+      if (editingItem && editingItem.id === id) {
+        setEditingItem(null);
+        setIsAddingNew(false);
+      }
+      showToast('Project deleted successfully.', 'info');
     }
   };
 
@@ -356,10 +376,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     onUpdateInquiries(updated);
   };
 
-  const deleteInquiry = (id: string) => {
-    if (confirm('Delete this inquiry message log?')) {
+  const deleteInquiry = (id: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (window.confirm('Delete this inquiry message log?')) {
       const updated = inquiries.filter((inq) => inq.id !== id);
       onUpdateInquiries(updated);
+      showToast('Inquiry log deleted.', 'info');
     }
   };
 
@@ -627,6 +652,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => startEdit(item)}
                             className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-accent-purple/40 text-neutral-400 hover:text-white transition-all cursor-pointer"
                             title="Edit project"
@@ -634,7 +660,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => deleteItem(item.id)}
+                            type="button"
+                            onClick={(e) => deleteItem(item.id, e)}
                             className="p-2 rounded bg-neutral-900 border border-white/5 hover:border-red-500/40 text-neutral-400 hover:text-red-400 transition-all cursor-pointer"
                             title="Delete project"
                           >
@@ -853,20 +880,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                   </div>
 
                   {/* Actions buttons */}
-                  <div className="pt-4 flex items-center justify-end gap-4">
-                    <button
-                      type="button"
-                      onClick={() => { setIsAddingNew(false); setEditingItem(null); }}
-                      className="px-5 py-2 rounded-lg border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 text-xs font-mono uppercase tracking-widest transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-6 py-2 rounded-lg bg-white text-black font-semibold text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-all flex items-center gap-1.5"
-                    >
-                      <Save className="w-4 h-4" /> Save Project
-                    </button>
+                  <div className="pt-4 flex items-center justify-between gap-4">
+                    {editingItem ? (
+                      <button
+                        type="button"
+                        onClick={(e) => deleteItem(editingItem.id, e)}
+                        className="px-4 py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-mono uppercase tracking-widest transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete Project
+                      </button>
+                    ) : <div />}
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => { setIsAddingNew(false); setEditingItem(null); }}
+                        className="px-5 py-2 rounded-lg border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 text-xs font-mono uppercase tracking-widest transition-all cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 rounded-lg bg-white text-black font-semibold text-xs font-mono uppercase tracking-widest hover:bg-neutral-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+                      >
+                        <Save className="w-4 h-4" /> Save Project
+                      </button>
+                    </div>
                   </div>
 
                 </form>
@@ -1325,6 +1363,24 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         </div>
 
       </div>
+
+      {/* Toast Notification Banner */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 rounded-lg bg-neutral-900 border border-white/20 shadow-2xl text-white text-xs font-mono animate-fade-in">
+          {toast.type === 'error' ? (
+            <X className="w-4 h-4 text-red-400 shrink-0" />
+          ) : (
+            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          )}
+          <span>{toast.message}</span>
+          <button 
+            onClick={() => setToast(null)} 
+            className="ml-2 text-neutral-400 hover:text-white cursor-pointer"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
     </section>
   );
