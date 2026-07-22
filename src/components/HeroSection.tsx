@@ -12,10 +12,24 @@ interface HeroSectionProps {
   settings: SiteSettings;
   onExploreClick: () => void;
   onBookClick: () => void;
+  onScrollClick?: () => void;
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreClick, onBookClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreClick, onBookClick, onScrollClick }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleScrollClick = () => {
+    if (onScrollClick) {
+      onScrollClick();
+      return;
+    }
+    const target = document.getElementById('home-services-section');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      onExploreClick();
+    }
+  };
 
   useEffect(() => {
     // Attempt auto-play with silent audio fallback if browser interrupts
@@ -122,19 +136,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreCli
       </div>
 
       {/* Sleek down pointer badge */}
-      <button 
-        onClick={onExploreClick}
-        className="absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-400 hover:text-white transition-all duration-300 group focus:outline-none"
-        aria-label="Scroll Down"
+      <div 
+        className="absolute bottom-24 sm:bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-400 select-none pointer-events-none"
         id="hero-scroll-indicator"
       >
-        <span className="text-[10px] font-mono tracking-[0.3em] uppercase opacity-80 group-hover:opacity-100 group-hover:text-accent-purple transition-all duration-300">
+        <span className="text-[10px] font-mono tracking-[0.3em] uppercase opacity-80">
           Scroll
         </span>
-        <div className="flex items-center justify-center w-8 h-8 rounded-full border border-white/10 group-hover:border-accent-purple/50 bg-black/40 group-hover:bg-accent-purple/10 transition-all duration-300 shadow-md">
-          <ArrowDown className="w-3.5 h-3.5 text-accent-purple group-hover:scale-110 transition-transform animate-bounce" />
+        <div className="flex items-center justify-center w-8 h-8 rounded-full border border-white/10 bg-black/40 shadow-md">
+          <ArrowDown className="w-3.5 h-3.5 text-accent-purple animate-bounce" />
         </div>
-      </button>
+      </div>
 
     </section>
   );

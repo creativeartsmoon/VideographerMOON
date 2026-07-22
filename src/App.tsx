@@ -339,10 +339,10 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                 {/* Card 1: Brand & Promotional */}
-                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
+                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 flex flex-col justify-between h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple">
                       <Award className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
@@ -358,10 +358,10 @@ export default function App() {
                 </div>
 
                 {/* Card 2: Events */}
-                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
+                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 flex flex-col justify-between h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple">
                       <Calendar className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
@@ -377,10 +377,10 @@ export default function App() {
                 </div>
 
                 {/* Card 3: Cultural Projects */}
-                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
+                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 flex flex-col justify-between h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple">
                       <Compass className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
@@ -396,10 +396,10 @@ export default function App() {
                 </div>
 
                 {/* Card 4: Documentary & Interviews */}
-                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 hover:border-accent-purple/30 hover:bg-neutral-900/65 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl group-hover:bg-accent-purple/10 transition-colors pointer-events-none" />
+                <div className="p-8 rounded-xl bg-neutral-900/35 border border-white/5 flex flex-col justify-between h-full relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple/5 rounded-full blur-3xl pointer-events-none" />
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-lg bg-accent-purple/10 border border-accent-purple/20 flex items-center justify-center text-accent-purple">
                       <Mic className="w-5 h-5" />
                     </div>
                     <div className="space-y-2">
@@ -431,7 +431,7 @@ export default function App() {
                 <div className="flex flex-col md:flex-row items-center justify-center md:items-stretch gap-6 md:gap-2 max-w-6xl mx-auto">
                   
                   {/* Step 1: Consultation */}
-                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 hover:border-accent-purple/20 transition-all duration-300 relative text-center">
+                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 relative text-center">
                     <div className="w-10 h-10 rounded-full bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple font-mono text-xs font-semibold mb-4">
                       01
                     </div>
@@ -447,7 +447,7 @@ export default function App() {
                   </div>
 
                   {/* Step 2: Planning */}
-                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 hover:border-accent-purple/20 transition-all duration-300 relative text-center">
+                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 relative text-center">
                     <div className="w-10 h-10 rounded-full bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple font-mono text-xs font-semibold mb-4">
                       02
                     </div>
@@ -463,7 +463,7 @@ export default function App() {
                   </div>
 
                   {/* Step 3: Production */}
-                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 hover:border-accent-purple/20 transition-all duration-300 relative text-center">
+                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 relative text-center">
                     <div className="w-10 h-10 rounded-full bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple font-mono text-xs font-semibold mb-4">
                       03
                     </div>
@@ -479,7 +479,7 @@ export default function App() {
                   </div>
 
                   {/* Step 4: Editing */}
-                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 hover:border-accent-purple/20 transition-all duration-300 relative text-center">
+                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 relative text-center">
                     <div className="w-10 h-10 rounded-full bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple font-mono text-xs font-semibold mb-4">
                       04
                     </div>
@@ -495,7 +495,7 @@ export default function App() {
                   </div>
 
                   {/* Step 5: Delivery */}
-                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 hover:border-accent-purple/20 transition-all duration-300 relative text-center">
+                  <div className="flex-1 w-full flex flex-col items-center bg-neutral-900/35 border border-white/5 rounded-xl p-6 relative text-center">
                     <div className="w-10 h-10 rounded-full bg-accent-purple/10 border border-accent-purple/30 flex items-center justify-center text-accent-purple font-mono text-xs font-semibold mb-4">
                       05
                     </div>
@@ -608,10 +608,10 @@ export default function App() {
             <section className="bg-neutral-950/40 border-t border-white/5 py-24 relative overflow-hidden" id="home-contact-section">
               <div className="absolute inset-0 bg-radial-gradient from-accent-purple/5 to-transparent blur-3xl pointer-events-none" />
               
-              <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 animate-fade-in">
-                <div className="text-center space-y-3">
-                  <span className="text-xs font-mono text-accent-purple uppercase tracking-[0.25em]">Bookings & Collaboration</span>
-                  <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white">
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20 animate-fade-in">
+                <div className="text-center space-y-3 max-w-2xl mx-auto">
+                  <span className="text-xs font-mono text-accent-purple uppercase tracking-[0.25em]">Bookings &amp; Collaboration</span>
+                  <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-white whitespace-nowrap">
                     Shape Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-purple-400 glow-text-purple">Visual Story</span>
                   </h2>
                   <div className="w-12 h-[2px] bg-accent-purple mx-auto rounded-full mt-2" />
@@ -637,7 +637,7 @@ export default function App() {
                   <span className="w-1.5 h-1.5 rounded-full bg-accent-purple animate-pulse" />
                   <span className="text-xs font-mono text-accent-purple uppercase tracking-[0.25em]">Portfolio</span>
                 </div>
-                <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-white uppercase tracking-tight leading-tight whitespace-nowrap">
+                <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white uppercase tracking-tight leading-tight whitespace-nowrap">
                   Creative Works
                 </h2>
               </div>
@@ -706,8 +706,8 @@ export default function App() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans">
                     {/* Scope Card */}
-                    <div className="group relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 hover:border-accent-purple/40 hover:bg-neutral-900/40 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
-                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 group-hover:text-accent-purple/10 transition-colors pointer-events-none select-none">
+                    <div className="relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
+                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 pointer-events-none select-none">
                         01
                       </div>
                       <div className="space-y-3">
@@ -715,7 +715,7 @@ export default function App() {
                           <Film className="w-4 h-4" />
                         </div>
                         <div className="space-y-2">
-                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider group-hover:text-accent-purple transition-colors">
+                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                             Production Scope
                           </h4>
                           <ul className="space-y-1 text-[11px] font-light text-neutral-400">
@@ -729,8 +729,8 @@ export default function App() {
                     </div>
 
                     {/* Setup Card */}
-                    <div className="group relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 hover:border-accent-purple/40 hover:bg-neutral-900/40 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
-                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 group-hover:text-accent-purple/10 transition-colors pointer-events-none select-none">
+                    <div className="relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
+                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 pointer-events-none select-none">
                         02
                       </div>
                       <div className="space-y-3">
@@ -738,7 +738,7 @@ export default function App() {
                           <Camera className="w-4 h-4" />
                         </div>
                         <div className="space-y-2">
-                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider group-hover:text-accent-purple transition-colors">
+                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                             Production Setup
                           </h4>
                           <ul className="space-y-1 text-[11px] font-light text-neutral-400">
@@ -752,8 +752,8 @@ export default function App() {
                     </div>
 
                     {/* Post Card */}
-                    <div className="group relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 hover:border-accent-purple/40 hover:bg-neutral-900/40 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
-                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 group-hover:text-accent-purple/10 transition-colors pointer-events-none select-none">
+                    <div className="relative p-5 rounded-xl bg-neutral-950/60 border-l-2 border-l-accent-purple/60 border-y border-r border-white/5 overflow-hidden flex flex-col justify-between h-full shadow-lg shadow-black/40">
+                      <div className="absolute top-2 right-4 text-5xl font-black font-display text-neutral-800/15 pointer-events-none select-none">
                         03
                       </div>
                       <div className="space-y-3">
@@ -761,7 +761,7 @@ export default function App() {
                           <Sparkles className="w-4 h-4 animate-pulse" />
                         </div>
                         <div className="space-y-2">
-                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider group-hover:text-accent-purple transition-colors">
+                          <h4 className="text-sm font-display font-bold text-white uppercase tracking-wider">
                             Post Production
                           </h4>
                           <ul className="space-y-1 text-[11px] font-light text-neutral-400">
@@ -780,7 +780,7 @@ export default function App() {
                     onClick={() => handleTabChange('contact')}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-xs font-mono font-bold uppercase tracking-widest hover:bg-neutral-200 transition-colors cursor-pointer"
                   >
-                    Bookings & Collaboration <ArrowUpRight className="w-4 h-4 text-accent-purple" />
+                    Bookings &amp; Collaboration <ArrowUpRight className="w-4 h-4 text-accent-purple" />
                   </button>
                 </div>
               </div>
@@ -806,43 +806,43 @@ export default function App() {
               <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
                 
                 {/* Box 1: Story First */}
-                <div className="group relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 hover:border-accent-purple/30 hover:-translate-y-1 transition-all duration-300 space-y-4 shadow-lg shadow-black/30">
+                <div className="relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 space-y-4 shadow-lg shadow-black/30">
                   <div className="flex items-center justify-between">
                     <BookOpen className="w-5 h-5 text-accent-purple" />
-                    <span className="text-[10px] font-mono text-neutral-600 group-hover:text-accent-purple/50 transition-colors">01 / STORY</span>
+                    <span className="text-[10px] font-mono text-neutral-600">01 / STORY</span>
                   </div>
                   <h4 className="font-display font-bold text-xs text-white uppercase tracking-widest border-b border-white/5 pb-2">
                     Story First
                   </h4>
-                  <p className="text-xs text-neutral-300 font-light leading-relaxed group-hover:text-white transition-colors duration-300">
+                  <p className="text-xs text-neutral-300 font-light leading-relaxed">
                     Understanding the purpose and core message behind the content.
                   </p>
                 </div>
 
                 {/* Box 2: Thoughtful Production */}
-                <div className="group relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 hover:border-accent-purple/30 hover:-translate-y-1 transition-all duration-300 space-y-4 shadow-lg shadow-black/30">
+                <div className="relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 space-y-4 shadow-lg shadow-black/30">
                   <div className="flex items-center justify-between">
                     <Compass className="w-5 h-5 text-accent-purple" />
-                    <span className="text-[10px] font-mono text-neutral-600 group-hover:text-accent-purple/50 transition-colors">02 / PROCESS</span>
+                    <span className="text-[10px] font-mono text-neutral-600">02 / PROCESS</span>
                   </div>
                   <h4 className="font-display font-bold text-xs text-white uppercase tracking-widest border-b border-white/5 pb-2">
                     Thoughtful Production
                   </h4>
-                  <p className="text-xs text-neutral-300 font-light leading-relaxed group-hover:text-white transition-colors duration-300">
+                  <p className="text-xs text-neutral-300 font-light leading-relaxed">
                     A customized and reliable process designed for your project.
                   </p>
                 </div>
 
                 {/* Box 3: Detailed Finishing */}
-                <div className="group relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 hover:border-accent-purple/30 hover:-translate-y-1 transition-all duration-300 space-y-4 shadow-lg shadow-black/30">
+                <div className="relative p-6 rounded-xl bg-neutral-950/60 border border-white/5 space-y-4 shadow-lg shadow-black/30">
                   <div className="flex items-center justify-between">
                     <Sparkles className="w-5 h-5 text-accent-purple animate-pulse" />
-                    <span className="text-[10px] font-mono text-neutral-600 group-hover:text-accent-purple/50 transition-colors">03 / FINISH</span>
+                    <span className="text-[10px] font-mono text-neutral-600">03 / FINISH</span>
                   </div>
                   <h4 className="font-display font-bold text-xs text-white uppercase tracking-widest border-b border-white/5 pb-2">
                     Detailed Finishing
                   </h4>
-                  <p className="text-xs text-neutral-300 font-light leading-relaxed group-hover:text-white transition-colors duration-300">
+                  <p className="text-xs text-neutral-300 font-light leading-relaxed">
                     Editing, color, and sound to bring the final narrative to life.
                   </p>
                 </div>
@@ -855,10 +855,10 @@ export default function App() {
 
         {/* ================= VIEW D: CONTACT INQUIRY ================= */}
         {activeTab === 'contact' && (
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-16 animate-fade-in" id="contact-view-container">
-            <div className="text-center space-y-3">
-              <span className="text-xs font-mono text-accent-purple uppercase tracking-[0.25em]">Bookings & Collaboration</span>
-              <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tight text-white">
+          <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 space-y-16 sm:space-y-20 animate-fade-in" id="contact-view-container">
+            <div className="text-center space-y-3 max-w-2xl mx-auto">
+              <span className="text-xs font-mono text-accent-purple uppercase tracking-[0.25em]">Bookings &amp; Collaboration</span>
+              <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-white whitespace-nowrap">
                 Shape Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-purple to-purple-400 glow-text-purple">Visual Story</span>
               </h2>
               <div className="w-12 h-[2px] bg-accent-purple mx-auto rounded-full mt-2" />
