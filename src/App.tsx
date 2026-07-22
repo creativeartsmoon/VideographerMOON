@@ -150,7 +150,75 @@ export default function App() {
     }
   }, []);
 
-  // 2. SEO Meta-tag & Document title sync hook
+  // 2. Path & Hash navigation hook for deep-linking & back/forward browser history support
+  const getTabFromUrl = (): string => {
+    const path = window.location.pathname.toLowerCase().trim();
+    const hash = window.location.hash.replace('#', '').toLowerCase().trim();
+
+    if (path.includes('/works') || path.includes('/portfolio') || path.includes('/work') || hash === 'portfolio' || hash === 'works' || hash === 'work') {
+      return 'portfolio';
+    }
+    if (path.includes('/about') || path.includes('/services') || path.includes('/bio') || hash === 'about' || hash === 'services' || hash === 'bio') {
+      return 'about';
+    }
+    if (path.includes('/contact') || path.includes('/booking') || path.includes('/inquiries') || hash === 'contact' || hash === 'booking' || hash === 'inquiry') {
+      return 'contact';
+    }
+    if (path.includes('/admin') || hash === 'admin') {
+      return 'admin';
+    }
+    if (path.includes('/home') || hash === 'home') {
+      return 'home';
+    }
+    return 'home';
+  };
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const tab = getTabFromUrl();
+      setActiveTab(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const initialTab = getTabFromUrl();
+    setActiveTab(initialTab);
+
+    if (window.location.pathname === '/' || window.location.pathname === '') {
+      let initialPath = '/home';
+      if (initialTab === 'about') initialPath = '/about';
+      else if (initialTab === 'portfolio') initialPath = '/works';
+      else if (initialTab === 'contact') initialPath = '/contact';
+      else if (initialTab === 'admin') initialPath = '/admin';
+      window.history.replaceState({ tab: initialTab }, '', initialPath);
+    }
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  // Centralized tab navigation handler updating URL path & browser history
+  const handleTabChange = (tab: string, pushHistory = true) => {
+    let targetPath = '/home';
+    if (tab === 'home') targetPath = '/home';
+    else if (tab === 'about') targetPath = '/about';
+    else if (tab === 'portfolio') targetPath = '/works';
+    else if (tab === 'contact') targetPath = '/contact';
+    else if (tab === 'admin') targetPath = '/admin';
+    else targetPath = '/' + tab;
+
+    if (pushHistory && window.location.pathname !== targetPath) {
+      window.history.pushState({ tab }, '', targetPath);
+    }
+
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 3. SEO Meta-tag & Document title sync hook
   useEffect(() => {
     if (siteSettings) {
       // Set Document Title
@@ -244,7 +312,7 @@ export default function App() {
       {/* 2. Sleek Floating Header */}
       <Header 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleTabChange} 
         settings={siteSettings} 
       />
 
@@ -257,8 +325,8 @@ export default function App() {
             {/* Cinematic Hero Background */}
             <HeroSection 
               settings={siteSettings} 
-              onExploreClick={() => setActiveTab('portfolio')} 
-              onBookClick={() => setActiveTab('contact')} 
+              onExploreClick={() => handleTabChange('portfolio')} 
+              onBookClick={() => handleTabChange('contact')} 
             />
 
             {/* ================= SECTION 1: WHAT I DO ================= */}
@@ -450,7 +518,7 @@ export default function App() {
                   <div className="w-12 h-[2px] bg-accent-purple sm:hidden mx-auto rounded-full mt-2" />
                 </div>
                 <button 
-                  onClick={() => setActiveTab('portfolio')}
+                  onClick={() => handleTabChange('portfolio')}
                   className="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-neutral-400 hover:text-white hover:gap-2.5 transition-all focus:outline-none"
                   id="view-all-reels-btn"
                 >
@@ -709,7 +777,7 @@ export default function App() {
 
                 <div className="pt-6">
                   <button
-                    onClick={() => setActiveTab('contact')}
+                    onClick={() => handleTabChange('contact')}
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-xs font-mono font-bold uppercase tracking-widest hover:bg-neutral-200 transition-colors cursor-pointer"
                   >
                     Bookings & Collaboration <ArrowUpRight className="w-4 h-4 text-accent-purple" />
@@ -839,7 +907,7 @@ export default function App() {
       {/* 5. Minimalist Footer */}
       <Footer 
         settings={siteSettings} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleTabChange} 
       />
 
     </div>
