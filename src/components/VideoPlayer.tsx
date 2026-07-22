@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Play, Volume2, VolumeX, RotateCcw, AlertCircle } from 'lucide-react';
+import { optimizeVideoUrl, getAutoThumbnailUrl } from '../utils/media';
 
 interface VideoPlayerProps {
   url: string;
@@ -26,6 +27,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [isPlaying, setIsPlaying] = useState(autoplay);
   const [isMuted, setIsMuted] = useState(muted);
   const [hasError, setHasError] = useState(false);
+
+  const optimizedUrl = optimizeVideoUrl(url);
+  const effectiveThumbnail = getAutoThumbnailUrl(thumbnailUrl, url);
 
   // Helper to check if URL is an embed or direct video file
   const getEmbedInfo = (videoUrl: string) => {
@@ -51,10 +55,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
       };
     }
 
-    // Direct MP4 / WebM / Ogv or generic Vimeo external URLs
+    // Direct MP4 / WebM / Ogv or Cloudinary or generic Vimeo external URLs
     const isDirect =
+      videoUrl.includes('cloudinary.com') ||
       videoUrl.includes('.mp4') ||
       videoUrl.includes('.webm') ||
+      videoUrl.includes('.mov') ||
       videoUrl.includes('.ogv') ||
       videoUrl.includes('player.vimeo.com/external');
 
@@ -71,7 +77,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return { type: 'direct', embedUrl: videoUrl };
   };
 
-  const info = getEmbedInfo(url);
+  const info = getEmbedInfo(optimizedUrl);
 
   const handlePlayClick = () => {
     setIsPlaying(true);
@@ -89,15 +95,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }
 
-  // Render direct MP4 / video files
+  // Render direct MP4 / Cloudinary / video files
   if (info.type === 'direct') {
     return (
       <div className="relative w-full h-full aspect-video group bg-black overflow-hidden rounded-lg border border-white/5" id="video-direct-container">
         {/* Thumbnail Preview prior to clicking play */}
-        {!isPlaying && thumbnailUrl && (
+        {!isPlaying && (
           <div className="absolute inset-0 z-10 flex items-center justify-center transition-all duration-500">
             <img
-              src={thumbnailUrl}
+              src={effectiveThumbnail}
               alt="Video Thumbnail Preview"
               className="absolute inset-0 w-full h-full object-cover filter brightness-50 transition-transform duration-700 group-hover:scale-105"
               referrerPolicy="no-referrer"
@@ -105,7 +111,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             <button
               onClick={handlePlayClick}
-              className="relative z-20 flex items-center justify-center w-16 h-16 rounded-full bg-accent-purple text-white shadow-lg shadow-accent-purple/30 hover:scale-110 active:scale-95 transition-all duration-300 hover:bg-opacity-90"
+              className="relative z-20 flex items-center justify-center w-16 h-16 rounded-full bg-accent-purple text-white shadow-lg shadow-accent-purple/30 hover:scale-110 active:scale-95 transition-all duration-300 hover:bg-opacity-90 cursor-pointer"
               aria-label="Play video"
               id="video-play-btn"
             >
@@ -116,12 +122,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         <video
           src={info.embedUrl}
+          poster={effectiveThumbnail}
           className="w-full h-full object-cover aspect-video"
           autoPlay={autoplay || isPlaying}
           controls={controls && isPlaying}
           muted={isMuted}
           loop={loop}
           playsInline
+          preload={isPlaying ? 'auto' : 'metadata'}
+          controlsList="nodownload"
           onError={() => setHasError(true)}
           id="direct-video-element"
         />
@@ -130,7 +139,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <div className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 rounded-full glass-card hover:border-accent-purple text-white transition-all"
+              className="p-2 rounded-full glass-card hover:border-accent-purple text-white transition-all cursor-pointer"
               title={isMuted ? 'Unmute' : 'Mute'}
               id="video-mute-toggle"
             >
@@ -146,10 +155,10 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   if (info.type === 'youtube' || info.type === 'vimeo' || info.type === 'embed') {
     return (
       <div className="relative w-full aspect-video bg-black overflow-hidden rounded-lg border border-white/5 shadow-2xl" id="video-iframe-container">
-        {!isPlaying && thumbnailUrl && (
+        {!isPlaying && (
           <div className="absolute inset-0 z-10 flex items-center justify-center">
             <img
-              src={thumbnailUrl}
+              src={effectiveThumbnail}
               alt="Video Embed Preview"
               className="absolute inset-0 w-full h-full object-cover filter brightness-50"
               referrerPolicy="no-referrer"
@@ -157,7 +166,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
             <button
               onClick={handlePlayClick}
-              className="relative z-20 flex items-center justify-center w-16 h-16 rounded-full bg-accent-purple text-white shadow-lg shadow-accent-purple/30 hover:scale-110 active:scale-95 transition-all duration-300"
+              className="relative z-20 flex items-center justify-center w-16 h-16 rounded-full bg-accent-purple text-white shadow-lg shadow-accent-purple/30 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer"
               aria-label="Play embed video"
               id="embed-play-btn"
             >

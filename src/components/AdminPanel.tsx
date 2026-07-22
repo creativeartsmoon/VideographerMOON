@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { PortfolioItem, SiteSettings, ContactInquiry } from '../types';
 import { sha256 } from '../utils/security';
+import { getAutoThumbnailUrl, optimizeVideoUrl } from '../utils/media';
 
 interface AdminPanelProps {
   portfolioItems: PortfolioItem[];
@@ -300,6 +301,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       return;
     }
 
+    // Auto-derive thumbnail if none provided, and optimize video URL for Cloudinary
+    const cleanVideoUrl = optimizeVideoUrl(itemForm.videoUrl);
+    const finalThumbnailUrl = getAutoThumbnailUrl(itemForm.thumbnailUrl, cleanVideoUrl);
+
     let updatedList: PortfolioItem[] = [];
 
     if (isAddingNew) {
@@ -308,8 +313,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         title: itemForm.title || 'Untitled Video',
         category: itemForm.category || 'Commercial',
         description: itemForm.description || '',
-        videoUrl: itemForm.videoUrl || '',
-        thumbnailUrl: itemForm.thumbnailUrl || '',
+        videoUrl: cleanVideoUrl,
+        thumbnailUrl: finalThumbnailUrl,
         year: itemForm.year || new Date().getFullYear().toString(),
         role: itemForm.role || 'Videographer',
         client: itemForm.client || 'Independent',
@@ -319,7 +324,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       updatedList = [newItem, ...portfolioItems];
     } else if (editingItem) {
       updatedList = portfolioItems.map((item) =>
-        item.id === editingItem.id ? { ...item, ...itemForm } as PortfolioItem : item
+        item.id === editingItem.id ? { 
+          ...item, 
+          ...itemForm, 
+          videoUrl: cleanVideoUrl, 
+          thumbnailUrl: finalThumbnailUrl 
+        } as PortfolioItem : item
       );
     }
 
@@ -403,7 +413,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               type="button"
               onClick={onClose}
               className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors cursor-pointer"
-              title="Close Admin Panel (창 닫기)"
+              title="Close Admin Panel"
               aria-label="Close Admin"
             >
               <X className="w-4 h-4" />
@@ -454,16 +464,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <KeyRound className="w-4 h-4" />
               Unlock Console
             </button>
-
-            {onClose && (
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full py-2.5 rounded-lg border border-white/10 hover:border-white/20 text-neutral-400 hover:text-white text-xs font-mono uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer mt-2"
-              >
-                <X className="w-3.5 h-3.5" /> Close (창 닫기)
-              </button>
-            )}
           </form>
 
         </div>
@@ -494,11 +494,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <button
               onClick={onClose}
               className="px-3.5 py-1.5 rounded bg-accent-purple/20 border border-accent-purple/40 hover:bg-accent-purple/30 text-white text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm hover:shadow-accent-purple/20"
-              title="Close Admin Panel (창 닫기)"
+              title="Close Admin Panel"
               id="close-admin-btn"
             >
               <X className="w-3.5 h-3.5 text-accent-purple" />
-              <span>Close (창 닫기)</span>
+              <span>Close</span>
             </button>
           )}
         </div>
@@ -588,7 +588,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                       <div key={item.id} className="py-4 flex items-center justify-between gap-4 group">
                         <div className="flex items-center gap-4">
                           <img
-                            src={item.thumbnailUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=150&q=80'}
+                            src={getAutoThumbnailUrl(item.thumbnailUrl, item.videoUrl)}
                             alt=""
                             className="w-16 h-10 object-cover rounded bg-neutral-900 shrink-0 border border-white/5"
                             referrerPolicy="no-referrer"
@@ -743,22 +743,29 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                         </label>
                       </div>
-                      {itemForm.thumbnailUrl && (
-                        <div className="mt-2 relative inline-block group/preview">
-                          <img
-                            src={itemForm.thumbnailUrl}
-                            alt="Thumbnail Preview"
-                            className="w-28 h-16 object-cover rounded border border-white/10"
-                            referrerPolicy="no-referrer"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setItemForm(prev => ({ ...prev, thumbnailUrl: '' }))}
-                            className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md cursor-pointer"
-                            title="Remove image"
-                          >
-                            &times;
-                          </button>
+                      {(itemForm.thumbnailUrl || itemForm.videoUrl) && (
+                        <div className="mt-3 space-y-1">
+                          <div className="text-[10px] font-mono text-neutral-400">
+                            {itemForm.thumbnailUrl ? 'Uploaded / Custom Thumbnail:' : 'Auto-derived Video Frame Thumbnail:'}
+                          </div>
+                          <div className="relative inline-block group/preview">
+                            <img
+                              src={getAutoThumbnailUrl(itemForm.thumbnailUrl, itemForm.videoUrl)}
+                              alt="Thumbnail Preview"
+                              className="w-32 h-20 object-cover rounded border border-white/10 shadow-md"
+                              referrerPolicy="no-referrer"
+                            />
+                            {itemForm.thumbnailUrl && (
+                              <button
+                                type="button"
+                                onClick={() => setItemForm(prev => ({ ...prev, thumbnailUrl: '' }))}
+                                className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md cursor-pointer"
+                                title="Remove custom image (will revert to video auto-thumbnail)"
+                              >
+                                &times;
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>

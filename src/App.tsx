@@ -23,6 +23,7 @@ import { FeaturedGrid } from './components/FeaturedGrid';
 import { ProjectModal } from './components/ProjectModal';
 import { ContactForm } from './components/ContactForm';
 import { sha256 } from './utils/security';
+import { getAutoThumbnailUrl } from './utils/media';
 
 const AdminPanel = React.lazy(() => import('./components/AdminPanel').then(m => ({ default: m.AdminPanel })));
 
@@ -505,7 +506,7 @@ export default function App() {
                     {/* Thumbnail Image */}
                     <div className="absolute inset-0 w-full h-full overflow-hidden">
                       <img
-                        src={project.thumbnailUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'}
+                        src={getAutoThumbnailUrl(project.thumbnailUrl, project.videoUrl)}
                         alt={project.title}
                         className="w-full h-full object-cover transform scale-100 group-hover:scale-105 filter brightness-[0.7] group-hover:brightness-[0.4] transition-all duration-700"
                         loading="lazy"

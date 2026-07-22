@@ -7,6 +7,7 @@ import React, { useRef, useEffect } from 'react';
 import { Play, ArrowDown, Film, Sparkles, Layers } from 'lucide-react';
 import { SiteSettings } from '../types';
 import darkWaveBg from '../assets/images/dark_wave_bg_1783872017132.jpg';
+import { optimizeVideoUrl } from '../utils/media';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -48,12 +49,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreCli
         <div className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none">
           <video
             ref={videoRef}
-            src={settings.heroVideoUrl}
+            src={optimizeVideoUrl(settings.heroVideoUrl)}
             className="w-full h-full object-cover filter brightness-[0.38] contrast-[1.05] saturate-[0.8]"
             autoPlay
             muted
             loop
             playsInline
+            preload="auto"
             id="hero-bg-video"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/70" />

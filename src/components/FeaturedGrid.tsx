@@ -6,6 +6,7 @@
 import React, { useState, useMemo } from 'react';
 import { Play, Film, Calendar, Eye, Layers, BookOpen, Rocket, Compass, Mic, Briefcase, Music, Video, Award } from 'lucide-react';
 import { PortfolioItem } from '../types';
+import { getAutoThumbnailUrl } from '../utils/media';
 
 interface FeaturedGridProps {
   items: PortfolioItem[];
@@ -86,7 +87,7 @@ export const FeaturedGrid: React.FC<FeaturedGridProps> = ({ items, onProjectSele
               {/* Thumbnail Image */}
               <div className="absolute inset-0 w-full h-full overflow-hidden">
                 <img
-                  src={project.thumbnailUrl || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800&q=80'}
+                  src={getAutoThumbnailUrl(project.thumbnailUrl, project.videoUrl)}
                   alt={project.title}
                   className="w-full h-full object-cover transform scale-100 group-hover:scale-105 filter brightness-[0.7] group-hover:brightness-[0.4] transition-all duration-700"
                   loading="lazy"
