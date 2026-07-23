@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "portfolioItem": {
+      "title": "Portfolio Item",
+      "description": "Video portfolio project details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "year": { "type": "string" },
+        "role": { "type": "string" },
+        "client": { "type": "string" },
+        "gearUsed": { "type": "string" },
+        "featured": { "type": "boolean" }
+      },
+      "required": ["id", "title"]
+    },
+    "siteSettings": {
+      "title": "Site Settings",
+      "description": "Site wide configuration and contact details",
+      "type": "object",
+      "properties": {
+        "siteTitle": { "type": "string" },
+        "siteSubtitle": { "type": "string" },
+        "siteTagline": { "type": "string" },
+        "bio": { "type": "string" },
+        "profileImage": { "type": "string" },
+        "instagramUrl": { "type": "string" },
+        "vimeoUrl": { "type": "string" },
+        "youtubeUrl": { "type": "string" },
+        "exploreDanceUrl": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "accentColor": { "type": "string" },
+        "heroVideoUrl": { "type": "string" },
+        "seoKeywords": { "type": "string" },
+        "adminPasscode": { "type": "string" }
+      }
+    },
+    "contactInquiry": {
+      "title": "Contact Inquiry",
+      "description": "Client contact inquiry submissions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "projectType": { "type": "string" },
+        "budget": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "collections": {
+      "portfolio_items": {
+        "entityName": "portfolioItem",
+        "description": "Video projects list"
+      },
+      "site_settings": {
+        "entityName": "siteSettings",
+        "description": "Single document for site configuration"
+      },
+      "contact_inquiries": {
+        "entityName": "contactInquiry",
+        "description": "Client messages"
+      }
+    }
+  }
+}

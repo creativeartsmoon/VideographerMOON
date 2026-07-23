@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Camera, Film, Sparkles, Mail, Phone, Calendar, ArrowUpRight, 
   ChevronRight, Award, Compass, Play, MapPin, CheckCircle,
-  BookOpen, Rocket, Mic, ArrowDown, Instagram, Check
+  BookOpen, Rocket, Mic, ArrowDown, Instagram, Check, ArrowUp
 } from 'lucide-react';
 import { PortfolioItem, SiteSettings, ContactInquiry } from './types';
 import { 
@@ -49,6 +49,21 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState<PortfolioItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Floating back-to-top button visibility
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Home Page Selected Works prioritizing highlighted (featured) items first
   const homeSelectedWorks = React.useMemo(() => {
     return [...portfolioItems]
@@ -60,7 +75,7 @@ export default function App() {
       .slice(0, 3);
   }, [portfolioItems]);
 
-  // 1. Initialize data from Supabase / localStorage on load
+  // 1. Initialize data from Firebase Firestore on load
   useEffect(() => {
     let isMounted = true;
     async function loadData() {
@@ -479,7 +494,18 @@ export default function App() {
                         alt={project.title}
                         className="w-full h-full object-cover transform scale-100 group-hover:scale-105 filter brightness-[0.7] group-hover:brightness-[0.4] transition-all duration-700"
                         loading="lazy"
+                        decoding="async"
                         referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (project.videoUrl && project.videoUrl.includes('vimeo.com')) {
+                            target.src = 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80';
+                          } else if (project.videoUrl && (project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be'))) {
+                            target.src = 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80';
+                          } else {
+                            target.src = 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80';
+                          }
+                        }}
                       />
                       
                       {/* Elegant Purple-Midnight Color Grading Vignette Hover Overlay */}
@@ -847,6 +873,18 @@ export default function App() {
         settings={siteSettings} 
         setActiveTab={handleTabChange} 
       />
+
+      {/* Floating Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-accent-purple/80 text-white shadow-lg shadow-accent-purple/30 border border-white/20 hover:bg-accent-purple hover:scale-110 active:scale-95 transition-all duration-300 backdrop-blur-md"
+          aria-label="Scroll to top"
+          id="scroll-to-top-btn"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
 
     </div>
   );

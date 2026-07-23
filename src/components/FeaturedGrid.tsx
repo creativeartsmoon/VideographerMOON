@@ -91,7 +91,18 @@ export const FeaturedGrid: React.FC<FeaturedGridProps> = ({ items, onProjectSele
                   alt={project.title}
                   className="w-full h-full object-cover transform scale-100 group-hover:scale-105 filter brightness-[0.7] group-hover:brightness-[0.4] transition-all duration-700"
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (project.videoUrl && project.videoUrl.includes('vimeo.com')) {
+                      target.src = 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80';
+                    } else if (project.videoUrl && (project.videoUrl.includes('youtube.com') || project.videoUrl.includes('youtu.be'))) {
+                      target.src = 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80';
+                    } else {
+                      target.src = 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80';
+                    }
+                  }}
                 />
                 
                 {/* Elegant Purple-Midnight Color Grading Vignette Hover Overlay */}
